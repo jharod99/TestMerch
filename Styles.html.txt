@@ -1,0 +1,434 @@
+<style>
+
+/* Ocultar spinners de input type number */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.grupo-estado {
+  margin-bottom: 2rem;
+  /* border-bottom: 1px solid #eee; // Ya lo tenías, es bueno */
+  padding-bottom: 1rem;
+}
+
+.grupo-finalizado {
+   opacity: 0.8; // atenuados 
+}
+
+/* --- Ajustes para Radio Buttons (Preguntas 1 y 2) --- */
+.form-group div[id$="-radio-group"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* Alinea verticalmente los elementos de cada línea */
+}
+
+/* Contenedor para cada par de radio + label para mejor control */
+.form-group div[id$="-radio-group"] .radio-option {
+  display: flex;
+  align-items: center; /* Alinea el radio y su label */
+  margin-right: 20px; /* Espacio entre opciones de radio */
+  margin-bottom: 5px; /* Espacio si hay wrapping */
+}
+
+.form-group div[id$="-radio-group"] .radio-option input[type="radio"] {
+  margin-right: 5px; /* Espacio entre el radio y su texto/label */
+}
+
+.form-group div[id$="-radio-group"] .radio-option label {
+  margin-right: 0; /* Quitar margen extra del label si no es necesario */
+  margin-left: 0;
+}
+
+
+/* --- Ajustes para el Checkbox de Monto (Pregunta 5) --- */
+/* El div que contiene el input de monto y el checkbox ya tiene display:flex y align-items:center
+   Puedes ajustar los márgenes directamente en el HTML o aquí: */
+
+#monto { /* El input de monto */
+  margin-right: 5px !important; /* Espacio reducido entre el input de monto y el checkbox */
+}
+
+#monto-check {
+  margin-left: 0 !important; /* Sin margen izquierdo para el checkbox */
+  margin-right: 0 !important; /* Sin margen derecho tampoco, ya que no hay label */
+  vertical-align: middle; /* Intenta alinear verticalmente */
+}
+
+#monto-check + label { /* El label "Confirmar" */
+  margin-left: 0 !important; /* Quita el margen izquierdo del label */
+  white-space: nowrap; /* Evita que "Confirmar" se parta si hay poco espacio */
+  vertical-align: middle;
+}
+
+/* Estilo opcional para grupos de radio */
+#area-radio-group label, #tipo-radio-group label {
+  margin-right: 15px;
+  margin-left: 3px;
+}
+#area-radio-group input[type="radio"], #tipo-radio-group input[type="radio"] {
+  margin-right: 0px;
+}
+  :root {
+    --primary: #4285f4;
+    --primary-dark: #3367d6;
+    --success: #34a853;
+    --warning: #fbbc05;
+    --danger: #ea4335;
+    --gray: #f5f5f5;
+    --gray-dark: #e0e0e0;
+    --dark: #202124;
+    --text: #333333;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+  }
+  
+  body {
+    background-color: #f8f9fa;
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  
+  .error-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  border-left: 4px solid #ea4335;
+}
+
+.error-container h2 {
+  color: #ea4335;
+}
+
+.error-container button {
+  padding: 10px 20px;
+  background: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-dark);
+  }
+  
+  .user-info {
+    font-size: 0.9em;
+    color: #666;
+    padding: 5px 10px;
+    background: var(--gray);
+    border-radius: 4px;
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .btn i {
+    font-style: normal;
+    font-weight: bold;
+  }
+  
+  .btn.primary {
+    background-color: var(--primary);
+    color: white;
+  }
+  
+  .btn.primary:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .btn.secondary {
+    background-color: var(--gray);
+    color: var(--text);
+  }
+  
+  .btn.secondary:hover {
+    background-color: var(--gray-dark);
+  }
+  
+  .btn.success {
+    background-color: var(--success);
+    color: white;
+  }
+  
+  .btn.warning {
+    background-color: var(--warning);
+    color: var(--dark);
+  }
+  
+  .toolbar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .cards-container-grouped { /* Contenedor de tarjetas DENTRO de cada grupo de estado */
+  display: flex;
+  flex-direction: row; /* Tarjetas en fila */
+  overflow-x: auto;   /* Scroll horizontal si se desbordan */
+  gap: 15px;          /* Espacio entre tarjetas */
+  padding: 10px 0px 15px 5px; /* Un poco de padding */
+  min-height: 200px; /* Para que el contenedor tenga algo de alto incluso si está vacío inicialmente */
+}
+  
+  .card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-width: 300px; /* Establecer un ancho mínimo para cada tarjeta */
+      min-width: 320px; /* Ancho mínimo de la tarjeta */
+  flex-shrink: 0; /* Evita que las tarjetas se encojan */
+
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+  
+  .card.creado {
+    border-left: 4px solid var(--primary);
+  }
+  
+  .card.recogido {
+    border-left: 4px solid var(--warning);
+  }
+  
+  .card.finalizado {
+    border-left: 4px solid var(--success);
+  }
+  
+  .card h3 {
+    margin-bottom: 10px;
+    color: var(--primary);
+    font-size: 1.2em;
+  }
+  
+  .card p {
+    margin: 5px 0;
+    font-size: 0.9em;
+  }
+  
+  .card .card-field {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .card .card-field strong {
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .card-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* Modal */
+/* ESTILOS DEL MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* ESTILOS DEL FORMULARIO */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+  
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 4px;
+    color: white;
+    z-index: 1001;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .toast.success {
+    background-color: var(--success);
+  }
+  
+  .toast.error {
+    background-color: var(--danger);
+  }
+
+  /* ESTILOS PARA ESTADOS */
+.grupo-estado {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.grupo-estado h3 {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* TARJETAS SEGÚN ESTADO */
+.card.creado {
+  border-left: 4px solid #4285f4;
+}
+.card.entregado {
+  border-left: 4px solid #fbbc05;
+}
+.card.recibido {
+  border-left: 4px solid #34a853;
+}
+.card.finalizado {
+  border-left: 4px solid #9e9e9e;
+  opacity: 0.8;
+}
+.card.pendiente {
+  border-left: 4px solid #ea4335;
+}
+
+/* MODAL ARTÍCULO ALTERNATIVO */
+#modal-articulo-alternativo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#modal-articulo-alternativo.show {
+  display: flex;
+}
+
+.modal-content-alternativo {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.comentario {
+  background: #fff8e1;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+</style>

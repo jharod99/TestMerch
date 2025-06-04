@@ -1,0 +1,141 @@
+<script>
+let currentUser;
+let currentRequestIdForAction = null; // Para ID de solicitud en modales de acción
+let currentRequestOriginalDetails = {}; // Para guardar detalles de la solicitud para modales
+
+let mostrarFinalizadas = false; 
+
+function debounce(func, delay) {
+  let debounceTimer;  // <-- Ahora es local a esta función
+  return function(...args) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+function getRadioValue(name) {
+  const selectedRadio = document.querySelector(`input[name="${name}"]:checked`);
+  return selectedRadio ? selectedRadio.value : null;
+}
+
+
+function initApp() {
+  console.log('¡initApp simplificado se llamó!'); // O la lógica mínima que tenías
+  // document.getElementById('app-loading').textContent = '¡initApp simplificado funcionó!';
+  if (document.getElementById('app-content')) { // Verifica que exista el elemento
+       document.getElementById('app-content').classList.remove('hidden');
+  }
+  if (document.getElementById('app-loading')) { // Verifica que exista el elemento
+      document.getElementById('app-loading').classList.add('hidden');
+  }
+}
+console.log('Scripts.html simplificado cargado.');
+
+function showNewRequestModal() { 
+  const modal = document.getElementById('modal-nuevo');
+  if (modal) modal.classList.add('show');
+}
+function hideNewRequestModal() { 
+  const modal = document.getElementById('modal-nuevo');
+  if (modal) modal.classList.remove('show');
+}
+function hideAlternativeArticleModal() { 
+  const modal = document.getElementById('modal-articulo-alternativo');
+  if (modal) modal.classList.remove('show');
+}
+
+function showAlert(message, type = 'info', duration = 3500) {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10); 
+  setTimeout(() => {
+    toast.classList.remove('show'); 
+    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 500); 
+  }, duration);
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const y = date.getFullYear();
+    const h = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${d}/${m}/${y} ${h}:${min}`;
+  } catch (e) { return String(dateString); }
+}
+
+let debounceTimer;
+
+function debounce(func, delay) {
+  return function(...args) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+function getRadioValue(name) {
+  const selectedRadio = document.querySelector(`input[name="${name}"]:checked`);
+  return selectedRadio ? selectedRadio.value : null;
+}
+
+
+function initApp() {
+  console.log('¡initApp simplificado se llamó!'); // O la lógica mínima que tenías
+  // document.getElementById('app-loading').textContent = '¡initApp simplificado funcionó!';
+  if (document.getElementById('app-content')) { // Verifica que exista el elemento
+       document.getElementById('app-content').classList.remove('hidden');
+  }
+  if (document.getElementById('app-loading')) { // Verifica que exista el elemento
+      document.getElementById('app-loading').classList.add('hidden');
+  }
+}
+console.log('Scripts.html simplificado cargado.');
+
+function showNewRequestModal() { 
+  const modal = document.getElementById('modal-nuevo');
+  if (modal) modal.classList.add('show');
+}
+function hideNewRequestModal() { 
+  const modal = document.getElementById('modal-nuevo');
+  if (modal) modal.classList.remove('show');
+}
+function hideAlternativeArticleModal() { 
+  const modal = document.getElementById('modal-articulo-alternativo');
+  if (modal) modal.classList.remove('show');
+}
+
+function showAlert(message, type = 'info', duration = 3500) {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10); 
+  setTimeout(() => {
+    toast.classList.remove('show'); 
+    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 500); 
+  }, duration);
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const y = date.getFullYear();
+    const h = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${d}/${m}/${y} ${h}:${min}`;
+  } catch (e) { return String(dateString); }
+}

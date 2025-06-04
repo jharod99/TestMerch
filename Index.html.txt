@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Sistema de Canjes</title>
+  <?!= include('Styles'); ?>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; }
+    #user-info-container { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 4px; }
+    .table-gestion-articulos { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .table-gestion-articulos th, .table-gestion-articulos td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    .table-gestion-articulos th { background-color: #f2f2f2; }
+    .table-gestion-articulos .btn-toggle-disponible { font-size: 0.8em; padding: 4px 8px;}
+  </style>
+</head>
+<body>
+  <div id="app-loading">Cargando aplicación...</div>
+  
+  <div id="app-content" class="hidden">
+    <header>
+      <h1>Sistema de Canjes</h1>
+      <div id="user-info-container">
+          <span id="user-info-email"></span> (<span id="user-info-role"></span>)
+      </div>
+    </header>
+    
+    <div id="vista-asesor" class="hidden">
+      <div class="toolbar">
+       <button id="btn-nueva-solicitud" class="btn primary"><i>+</i> Nueva Solicitud</button>
+       <button id="btn-toggle-finalizadas-asesor" class="btn secondary btn-toggle-finalizadas" style="margin-left: 10px;">Mostrar Finalizadas</button> 
+      </div>
+     <h2>Tus Solicitudes</h2>
+     <div id="solicitudes-container" class="cards-container"></div> </div>
+    
+    <div id="vista-encargada" class="hidden"> 
+       <div class="toolbar"> 
+           <button id="btn-ver-solicitudes-encargada" class="btn primary">Ver Solicitudes</button>
+           <button id="btn-gestionar-articulos" class="btn primary" style="margin-left: 10px;">Gestionar Artículos</button>
+           <button id="btn-toggle-finalizadas-encargada" class="btn secondary btn-toggle-finalizadas" style="margin-left: 10px;">Mostrar Finalizadas</button> 
+       </div>
+      <div id="encargada-solicitudes-view"> <h2>Solicitudes Pendientes y en Proceso (Encargada)</h2>
+        <div id="encargada-requests-container" class="cards-container"></div>
+      </div>
+      <div id="encargada-gestion-articulos-view" class="hidden"> <h2>Gestionar Disponibilidad de Artículos</h2>
+        <div id="gestion-articulos-container"></div>
+      </div>
+    </div> 
+
+    <div id="vista-practicante" class="hidden">
+       <div class="toolbar"> 
+           <button id="btn-toggle-finalizadas-practicante" class="btn secondary btn-toggle-finalizadas" style="margin-left: 10px;">Mostrar Finalizadas</button> 
+       </div>
+      <h2>Solicitudes (Practicante)</h2> 
+      <div id="practicante-requests-container" class="cards-container"></div> 
+    </div>
+  </div>
+
+  <div id="modal-nuevo" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideNewRequestModal()">&times;</span>
+      <h2>Nueva Solicitud de Canje</h2>
+      <form id="form-nueva-solicitud">
+        <div class="form-group">
+          <label>Área:</label>
+          <div id="area-radio-group">
+            <div class="radio-option"> <input type="radio" id="area-repuesto" name="area" value="Repuesto" required> <label for="area-repuesto">Repuesto</label></div>
+            <div class="radio-option"> <input type="radio" id="area-taller" name="area" value="Taller" required> <label for="area-taller">Taller</label></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tipo:</label>
+          <div id="tipo-radio-group">
+            <div class="radio-option"> <input type="radio" id="tipo-venta" name="tipo" value="Venta" required> <label for="tipo-venta">Venta</label> </div>
+            <div class="radio-option"> <input type="radio" id="tipo-canje" name="tipo" value="Canje" required> <label for="tipo-canje">Canje</label> </div>
+          </div>
+        </div>
+        <div class="form-group"> <label for="numFactura">N° Factura/Boleta:</label> <input type="text" id="numFactura" name="numFactura" required> </div>
+        <div class="form-group"> <label for="razonSocial">Razón Social:</label> <input type="text" id="razonSocial" name="razonSocial" required> </div>
+        <div class="form-group">
+          <label for="monto">Monto sin IGV:</label>
+          <div style="display: flex; align-items: center;">
+            <input type="number" id="monto" name="monto" step="0.01" min="0" required style="flex-grow: 1;">
+            <input type="checkbox" id="monto-check">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="articulo">Artículo:</label>
+          <select id="articulo" name="articulo" required disabled> <option value="">Confirme Área y Monto con el check</option> </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn secondary" onclick="hideNewRequestModal()">Cancelar</button>
+          <button type="submit" id="btn-submit-solicitud" class="btn primary" disabled>Enviar Solicitud</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-asesor-elige-articulo" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideModalAsesorEligeArticulo()">&times;</span>
+      <h2>Elegir Artículo Alternativo</h2>
+      <p>El artículo original no está disponible o fue rechazado. Por favor, selecciona uno nuevo.</p>
+      <p><strong>Solicitud ID:</strong> <span id="asesor-elige-solicitud-id"></span></p>
+      <p><strong>Monto Original (s/IGV):</strong> S/ <span id="asesor-elige-monto"></span></p>
+      <p><strong>Área Original:</strong> <span id="asesor-elige-area"></span></p>
+      <p><strong>Artículo Rechazado:</strong> <span id="asesor-elige-articulo-rechazado"></span></p>
+      <div class="form-group">
+        <label for="asesor-select-nuevo-articulo">Nuevo Artículo Disponible:</label>
+        <select id="asesor-select-nuevo-articulo" name="asesor-select-nuevo-articulo" required></select>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn secondary" onclick="hideModalAsesorEligeArticulo()">Cancelar</button>
+        <button type="button" class="btn primary" onclick="enviarSeleccionAlternativoAsesor()">Confirmar Nuevo Artículo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-articulo-alternativo" class="modal"> 
+    <div class="modal-content modal-content-alternativo"> 
+      <span class="close" onclick="hideAlternativeArticleModal()">&times;</span> 
+      <h3>Seleccionar artículo alternativo</h3> 
+      <div class="form-group"> <label for="articulo-alternativo-select">Artículo disponible:</label> <select id="articulo-alternativo-select"></select> </div>
+      <div class="form-group"> <label for="comentario-alternativo">Motivo del cambio/Comentario:</label> <textarea id="comentario-alternativo" rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"></textarea> </div>
+      <div class="form-actions"> <button type="button" class="btn secondary" onclick="hideAlternativeArticleModal()">Cancelar</button> <button type="button" class="btn primary" onclick="enviarSugerenciaArticuloAlternativo()">Enviar Sugerencia</button> </div>
+    </div>
+  </div>
+
+  <?!= include('Scripts'); ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>   
+</body>
+</html>
